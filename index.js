@@ -44,12 +44,16 @@ const searchFiles = async (treesUrl, fullName) => {
     /^.*\.?(bashrc|bash_profile)/.test(item.path)
   )
   for (let file of targetFiles) {
-    const saveFilePath = `files/${fullName}/${file.path}`
-    const dir = path.dirname(saveFilePath)
-    createDirectory(dir)
-    const blobRes = await axios.get(file.url)
-    // const blob = decode(blobRes.data.content)
-    writeFile(saveFilePath, Buffer.from(blobRes.data.content, 'base64'))
+    try {
+      const saveFilePath = `files/${fullName}/${file.path}`
+      const dir = path.dirname(saveFilePath)
+      createDirectory(dir)
+      const blobRes = await axios.get(file.url)
+      // const blob = decode(blobRes.data.content)
+      writeFile(saveFilePath, Buffer.from(blobRes.data.content, 'base64'))
+    } catch (err) {
+      console.error(err)
+    }
     await sleep(1000)
   }
   return targetFiles.length
@@ -60,7 +64,7 @@ const main = async () => {
     q: 'topic:dotfiles',
     sort: 'stars',
     page: 1,
-    per_page: 100
+    per_page: 10
   }
   const headers = {
     Accept: 'application/vnd.github.mercy-preview+json'
