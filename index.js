@@ -41,7 +41,7 @@ const searchFiles = async (treesUrl, fullName) => {
   }
   const res = await axios.get(treesUrl, { params: params })
   const targetFiles = res.data.tree.filter(item =>
-    /^.*\.?(bashrc|bash_profile)/.test(item.path)
+    /^.*\.?(bashrc|bash_profile|zshrc|zsh_profile)/.test(item.path)
   )
   for (let file of targetFiles) {
     try {
