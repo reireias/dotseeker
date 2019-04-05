@@ -54,8 +54,10 @@ const searchFiles = async (treesUrl, fullName) => {
     per_page: 100
   }
   const res = await get(treesUrl, { params: params })
-  const targetFiles = res.data.tree.filter(item =>
-    /^.*\.?(bashrc|bash_profile|zshrc|zsh_profile)/.test(item.path)
+  const targetFiles = res.data.tree.filter(
+    item =>
+      item.type === 'blob' &&
+      /^.*\.?(bashrc|bash_profile|zshrc|zsh_profile)/.test(item.path)
   )
   for (let file of targetFiles) {
     try {
@@ -63,7 +65,6 @@ const searchFiles = async (treesUrl, fullName) => {
       const dir = path.dirname(saveFilePath)
       createDirectory(dir)
       const blobRes = await get(file.url)
-      // const blob = decode(blobRes.data.content)
       writeFile(saveFilePath, Buffer.from(blobRes.data.content, 'base64'))
     } catch (err) {
       console.error(err)
@@ -81,7 +82,7 @@ const seek = async () => {
   const params = {
     q: 'topic:dotfiles',
     sort: 'stars',
-    page: 2,
+    page: 10,
     per_page: 100
   }
   const headers = {
