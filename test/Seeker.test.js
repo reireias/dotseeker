@@ -3,6 +3,7 @@ const rimraf = require('rimraf')
 const Seeker = require('../Seeker')
 const GitHub = require('../GitHub')
 
+console.info = () => {}
 const exist = path => {
   try {
     fs.statSync(path)
@@ -13,6 +14,23 @@ const exist = path => {
 }
 
 jest.mock('../GitHub')
+const searchMock = jest.fn(() => {
+  return {
+    total_count: 2,
+    items: [
+      {
+        trees_url: 'https://example.com',
+        default_branch: 'master',
+        full_name: 'dummy/dummy'
+      },
+      {
+        trees_url: 'https://example.com',
+        default_branch: 'master',
+        full_name: 'dummy/dummy2'
+      }
+    ]
+  }
+})
 const treeMock = jest.fn(() => {
   return {
     tree: [
@@ -31,10 +49,15 @@ const blobMock = jest.fn(() => {
   // content = base64 encoded 'Hello World'
   return { content: 'SGVsbG8gV29ybGQ=' }
 })
+const rateLimitMock = jest.fn(() => {
+  return 'dummy'
+})
 GitHub.mockImplementation(() => {
   return {
+    search: searchMock,
     tree: treeMock,
-    blob: blobMock
+    blob: blobMock,
+    rateLimit: rateLimitMock
   }
 })
 
@@ -70,6 +93,15 @@ describe('constructor', () => {
       expect(seeker.page).toBe(1)
       expect(seeker.perPage).toBe(10)
     })
+  })
+})
+
+describe('seek', () => {
+  it('should download files', async () => {
+    const seeker = new Seeker()
+    await seeker.seek()
+    expect(exist('./files/dummy/dummy/.bashrc')).toBeTruthy()
+    expect(exist('./files/dummy/dummy/hoge/.zshrc')).toBeTruthy()
   })
 })
 
