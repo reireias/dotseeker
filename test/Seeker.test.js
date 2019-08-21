@@ -13,12 +13,27 @@ const exist = path => {
 }
 
 jest.mock('../GitHub')
+const treeMock = jest.fn(() => {
+  return {
+    tree: [
+      {
+        path: '.bashrc',
+        url: 'https://example.com'
+      },
+      {
+        path: 'hoge/.zshrc',
+        url: 'https://example.com'
+      }
+    ]
+  }
+})
 const blobMock = jest.fn(() => {
   // content = base64 encoded 'Hello World'
   return { content: 'SGVsbG8gV29ybGQ=' }
 })
 GitHub.mockImplementation(() => {
   return {
+    tree: treeMock,
     blob: blobMock
   }
 })
@@ -58,8 +73,22 @@ describe('constructor', () => {
   })
 })
 
+describe('_downloadFiles', () => {
+  it('should download files', async () => {
+    const repository = {
+      trees_url: 'https://example.com',
+      default_branch: 'master',
+      full_name: 'dummy/dummy'
+    }
+    const seeker = new Seeker()
+    await seeker._downloadFiles(repository)
+    expect(exist('./files/dummy/dummy/.bashrc')).toBeTruthy()
+    expect(exist('./files/dummy/dummy/hoge/.zshrc')).toBeTruthy()
+  })
+})
+
 describe('_download', () => {
-  it('should download file.', async () => {
+  it('should download file', async () => {
     const target = { path: '.bashrc', url: 'https://example.com' }
     const seeker = new Seeker()
     await seeker._download(target, 'dummy/dummy')
