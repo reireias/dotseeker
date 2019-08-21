@@ -82,8 +82,8 @@ const seek = async () => {
   const params = {
     q: 'topic:dotfiles',
     sort: 'stars',
-    page: 10,
-    per_page: 100
+    page: 1,
+    per_page: 10
   }
   const headers = {
     Accept: 'application/vnd.github.mercy-preview+json'

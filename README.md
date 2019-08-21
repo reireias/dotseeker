@@ -18,7 +18,7 @@ GITHUB_API_TOKEN=xxxxxxxxxxxxxxxxx
 Execute!
 
 ```console
-yarn run
+yarn start
 ```
 
 dotseeker downloads dotfile into `files` directory.
