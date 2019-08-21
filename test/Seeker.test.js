@@ -1,4 +1,34 @@
+const fs = require('fs')
+const rimraf = require('rimraf')
 const Seeker = require('../Seeker')
+const GitHub = require('../GitHub')
+
+const exist = path => {
+  try {
+    fs.statSync(path)
+    return true
+  } catch (err) {
+    return false
+  }
+}
+
+jest.mock('../GitHub')
+const blobMock = jest.fn(() => {
+  // content = base64 encoded 'Hello World'
+  return { content: 'SGVsbG8gV29ybGQ=' }
+})
+GitHub.mockImplementation(() => {
+  return {
+    blob: blobMock
+  }
+})
+
+afterEach(() => {
+  const path = './files/dummy'
+  if (exist(path)) {
+    rimraf.sync(path)
+  }
+})
 
 describe('constructor', () => {
   describe('arguments', () => {
@@ -25,5 +55,14 @@ describe('constructor', () => {
       expect(seeker.page).toBe(1)
       expect(seeker.perPage).toBe(10)
     })
+  })
+})
+
+describe('_download', () => {
+  it('should download file.', async () => {
+    const target = { path: '.bashrc', url: 'https://example.com' }
+    const seeker = new Seeker()
+    await seeker._download(target, 'dummy/dummy')
+    expect(exist('./files/dummy/dummy/.bashrc')).toBeTruthy()
   })
 })
