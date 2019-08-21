@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "run": "node index.js",
     "lint": "eslint --ext .js --ignore-path .gitignore ."
   },
   "dependencies": {
