@@ -1,6 +1,6 @@
 const axios = require('axios')
 
-const API_BASE = 'https://api2.github.com'
+const API_BASE = 'https://api.github.com'
 const SEARCH_URL = `${API_BASE}/search/repositories`
 const LIMIT_URL = `${API_BASE}/rate_limit`
 

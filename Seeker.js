@@ -2,6 +2,8 @@ const path = require('path')
 const fs = require('fs')
 const GitHub = require('./GitHub.js')
 
+const TREE_SEARCH_LIMIT = 100
+
 const exist = path => {
   try {
     fs.statSync(path)
@@ -29,58 +31,73 @@ module.exports = class Seeker {
     this.sort = options.sort === undefined ? 'stars' : options.sort
     this.page = options.page === undefined ? 1 : options.page
     this.perPage = options.perPage === undefined ? 10 : options.perPage
+    this.filenamePattern =
+      options.filenamePattern === undefined
+        ? /^.*\.?(bashrc|bash_profile|zshrc|zsh_profile)/
+        : options.filenamePattern
     this.gh = new GitHub(process.env.GITHUB_API_TOKEN)
   }
 
   async seek() {
     console.info('search dotfiles topic repositories...')
-    const data = await this.gh.search({
+    const start = this.perPage * (this.page - 1) + 1
+    const end = this.perPage * this.page
+    console.info(`target: top ${start} to ${end}`)
+
+    const repositories = await this._searchRepository()
+    console.info(`repositories: ${repositories.total_count}`)
+
+    let count = 0
+    for (let repository of repositories.items) {
+      count += await this._downloadFiles(repository)
+    }
+    console.info(`saved files: ${count}`)
+
+    console.info('limit rate info:')
+    console.info(await this.gh.rateLimit())
+  }
+
+  async _searchRepository() {
+    return this.gh.search({
       q: this.q,
       sort: this.sort,
       page: this.page,
       per_page: this.perPage
     })
+  }
 
-    console.info(`repositories: ${data.total_count}`)
-    console.info(
-      `target: top ${this.perPage * (this.page - 1) + 1} to ${this.perPage *
-        this.page}`
-    )
-    let count = 0
+  async _downloadFiles(repository) {
     const params = {
       recursive: 1,
       type: 'blob',
       page: 1,
-      per_page: 100
+      per_page: TREE_SEARCH_LIMIT
     }
-    for (let item of data.items) {
-      const data = await this.gh.tree(
-        item.trees_url,
-        item.default_branch,
-        params
-      )
-      count += await this._searchFiles(data.tree, item.full_name)
-    }
-    console.info(`saved files: ${count}`)
-    console.info('limit rate info:')
-    console.info(await this.gh.rateLimit())
-  }
-
-  async _searchFiles(tree, fullName) {
-    const targetFiles = tree.filter(item =>
-      /^.*\.?(bashrc|bash_profile|zshrc|zsh_profile)/.test(item.path)
+    const treeData = await this.gh.tree(
+      repository.trees_url,
+      repository.default_branch,
+      params
     )
-    for (let file of targetFiles) {
+    const targets = treeData.tree.filter(item =>
+      this.filenamePattern.test(item.path)
+    )
+    let count = 0
+    for (let target of targets) {
       try {
-        const saveFilePath = `files/${fullName}/${file.path}`
-        const dir = path.dirname(saveFilePath)
-        createDirectory(dir)
-        const blob = await this.gh.blob(file.url)
-        writeFile(saveFilePath, Buffer.from(blob.content, 'base64'))
+        await this._download(target, repository.full_name)
+        count += 1
       } catch (err) {
         console.error(err)
       }
     }
-    return targetFiles.length
+    return count
+  }
+
+  async _download(target, repositoryName) {
+    const saveFilePath = `files/${repositoryName}/${target.path}`
+    const dir = path.dirname(saveFilePath)
+    createDirectory(dir)
+    const blob = await this.gh.blob(target.url)
+    writeFile(saveFilePath, Buffer.from(blob.content, 'base64'))
   }
 }
