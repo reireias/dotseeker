@@ -1,10 +1,10 @@
 const axios = require('axios')
 const path = require('path')
 const fs = require('fs')
+const GitHub = require('./GitHub.js')
 
 const API_BASE = 'https://api.github.com'
 const LIMIT_URL = `${API_BASE}/rate_limit`
-const SEARCH_URL = `${API_BASE}/search/repositories`
 
 const addTokenHeader = options => {
   if (!options) {
@@ -50,6 +50,7 @@ const writeFile = (path, buffer) => {
 const searchFiles = async (treesUrl, fullName) => {
   const params = {
     recursive: 1,
+    type: 'blob',
     page: 1,
     per_page: 100
   }
@@ -87,24 +88,22 @@ module.exports = class Seeker {
   }
 
   async seek() {
-    const params = {
+    console.info('search dotfiles topic repositories...')
+    const gh = new GitHub(process.env.GITHUB_API_TOKEN)
+    const data = await gh.search({
       q: this.q,
       sort: this.sort,
       page: this.page,
       per_page: this.perPage
-    }
-    const headers = {
-      Accept: 'application/vnd.github.mercy-preview+json'
-    }
-    console.info('search dotfiles topic repositories...')
-    const res = await get(SEARCH_URL, { headers: headers, params: params })
-    console.info(`repositories: ${res.data.total_count}`)
+    })
+
+    console.info(`repositories: ${data.total_count}`)
     console.info(
-      `target: top ${params.per_page * (params.page - 1) +
-        1} to ${params.per_page * params.page}`
+      `target: top ${this.perPage * (this.page - 1) + 1} to ${this.perPage *
+        this.page}`
     )
     let count = 0
-    for (let item of res.data.items) {
+    for (let item of data.items) {
       const treesUrl = item.trees_url.replace(
         '{/sha}',
         `/${item.default_branch}`
