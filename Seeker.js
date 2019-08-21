@@ -79,12 +79,19 @@ const rateLimit = async () => {
 }
 
 module.exports = class Seeker {
+  constructor(options = {}) {
+    this.q = options.q === undefined ? 'topic:dotfiles' : options.q
+    this.sort = options.sort === undefined ? 'stars' : options.sort
+    this.page = options.page === undefined ? 1 : options.page
+    this.perPage = options.perPage === undefined ? 10 : options.perPage
+  }
+
   async seek() {
     const params = {
-      q: 'topic:dotfiles',
-      sort: 'stars',
-      page: 1,
-      per_page: 10
+      q: this.q,
+      sort: this.sort,
+      page: this.page,
+      per_page: this.perPage
     }
     const headers = {
       Accept: 'application/vnd.github.mercy-preview+json'
