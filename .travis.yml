@@ -5,6 +5,7 @@ node_js:
 cache: yarn
 script:
   - yarn lint
+  - yarn test
 notifications:
   email: false
   slack:

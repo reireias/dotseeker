@@ -2,7 +2,8 @@ module.exports = {
   root: true,
   env: {
     browser: true,
-    node: true
+    node: true,
+    jest: true
   },
   parserOptions: {
     ecmaVersion: 2018
@@ -12,7 +13,8 @@ module.exports = {
     'plugin:prettier/recommended'
   ],
   plugins: [
-    'prettier'
+    'prettier',
+    'jest'
   ],
   // add your custom rules here
   rules: {}
