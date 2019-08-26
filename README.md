@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/reireias/dotseeker.svg?branch=master)](https://travis-ci.org/reireias/dotseeker)
 # dotseeker
 
 Collect dotfile (e.g. `.zshrc`) from GitHub repositories which has dotfiles topic.
