@@ -12,3 +12,9 @@ jobs:
       - run: yarn install
       - run: yarn test
       - run: yarn lint
+      - uses: 8398a7/action-slack@v1
+        with:
+          type: auto
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
