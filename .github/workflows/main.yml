@@ -12,7 +12,7 @@ jobs:
       - run: yarn install
       - run: yarn test
       - run: yarn lint
-      - uses: 8398a7/action-slack@v1
+      - uses: 8398a7/action-slack@v1.1.1
         with:
           type: auto
         env:
