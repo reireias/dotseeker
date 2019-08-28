@@ -1,0 +1,14 @@
+---
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup node
+        uses: actions/setup-node@v1
+      - run: yarn install
+      - run: yarn test
+      - run: yarn lint
