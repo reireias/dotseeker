@@ -48,7 +48,7 @@ module.exports = class Seeker {
     console.info(`repositories: ${repositories.total_count}`)
 
     let count = 0
-    for (let repository of repositories.items) {
+    for (const repository of repositories.items) {
       count += await this._downloadFiles(repository)
     }
     console.info(`saved files: ${count}`)
@@ -82,7 +82,7 @@ module.exports = class Seeker {
       this.filenamePattern.test(item.path)
     )
     let count = 0
-    for (let target of targets) {
+    for (const target of targets) {
       try {
         await this._download(target, repository.full_name)
         count += 1
