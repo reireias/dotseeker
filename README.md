@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/reireias/dotseeker.svg?branch=master)](https://travis-ci.org/reireias/dotseeker)
+[![Actions Status](https://github.com/reireias/dotseeker/workflows/test/badge.svg)](https://github.com/reireias/dotseeker/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # dotseeker
 
 Collect dotfile (e.g. `.zshrc`) from GitHub repositories which has dotfiles topic.
