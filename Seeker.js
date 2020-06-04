@@ -4,7 +4,7 @@ const GitHub = require('./GitHub.js')
 
 const TREE_SEARCH_LIMIT = 100
 
-const exist = path => {
+const exist = (path) => {
   try {
     fs.statSync(path)
     return true
@@ -13,7 +13,7 @@ const exist = path => {
   }
 }
 
-const createDirectory = path => {
+const createDirectory = (path) => {
   if (!exist(path)) {
     fs.mkdirSync(path, { recursive: true })
   }
@@ -62,7 +62,7 @@ module.exports = class Seeker {
       q: this.q,
       sort: this.sort,
       page: this.page,
-      per_page: this.perPage
+      per_page: this.perPage,
     })
   }
 
@@ -71,14 +71,14 @@ module.exports = class Seeker {
       recursive: 1,
       type: 'blob',
       page: 1,
-      per_page: TREE_SEARCH_LIMIT
+      per_page: TREE_SEARCH_LIMIT,
     }
     const treeData = await this.gh.tree(
       repository.trees_url,
       repository.default_branch,
       params
     )
-    const targets = treeData.tree.filter(item =>
+    const targets = treeData.tree.filter((item) =>
       this.filenamePattern.test(item.path)
     )
     let count = 0

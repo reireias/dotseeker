@@ -13,11 +13,11 @@ module.exports = class GitHub {
   async search(params = {}) {
     const headers = {
       Authorization: `token ${this.token}`,
-      Accept: 'application/vnd.github.mercy-preview+json'
+      Accept: 'application/vnd.github.mercy-preview+json',
     }
     const res = await axios.get(SEARCH_URL, {
       headers: headers,
-      params: params
+      params: params,
     })
     return res.data
   }
@@ -26,7 +26,7 @@ module.exports = class GitHub {
     const url = treesUrl.replace('{/sha}', `/${branch}`)
     const res = await axios.get(url, {
       headers: this.headers,
-      params: params
+      params: params,
     })
     return res.data
   }

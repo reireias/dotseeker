@@ -4,7 +4,7 @@ const Seeker = require('../Seeker')
 const GitHub = require('../GitHub')
 
 console.info = () => {}
-const exist = path => {
+const exist = (path) => {
   try {
     fs.statSync(path)
     return true
@@ -21,14 +21,14 @@ const searchMock = jest.fn(() => {
       {
         trees_url: 'https://example.com',
         default_branch: 'master',
-        full_name: 'dummy/dummy'
+        full_name: 'dummy/dummy',
       },
       {
         trees_url: 'https://example.com',
         default_branch: 'master',
-        full_name: 'dummy/dummy2'
-      }
-    ]
+        full_name: 'dummy/dummy2',
+      },
+    ],
   }
 })
 const treeMock = jest.fn(() => {
@@ -36,13 +36,13 @@ const treeMock = jest.fn(() => {
     tree: [
       {
         path: '.bashrc',
-        url: 'https://example.com'
+        url: 'https://example.com',
       },
       {
         path: 'hoge/.zshrc',
-        url: 'https://example.com'
-      }
-    ]
+        url: 'https://example.com',
+      },
+    ],
   }
 })
 const blobMock = jest.fn(() => {
@@ -57,7 +57,7 @@ GitHub.mockImplementation(() => {
     search: searchMock,
     tree: treeMock,
     blob: blobMock,
-    rateLimit: rateLimitMock
+    rateLimit: rateLimitMock,
   }
 })
 
@@ -75,7 +75,7 @@ describe('constructor', () => {
         q: 'q',
         sort: 'sort',
         page: 2,
-        perPage: 100
+        perPage: 100,
       }
       const seeker = new Seeker(options)
       expect(seeker.q).toBe(options.q)
@@ -110,7 +110,7 @@ describe('_downloadFiles', () => {
     const repository = {
       trees_url: 'https://example.com',
       default_branch: 'master',
-      full_name: 'dummy/dummy'
+      full_name: 'dummy/dummy',
     }
     const seeker = new Seeker()
     await seeker._downloadFiles(repository)
