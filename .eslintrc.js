@@ -3,19 +3,13 @@ module.exports = {
   env: {
     browser: true,
     node: true,
-    jest: true
+    jest: true,
   },
   parserOptions: {
-    ecmaVersion: 2018
+    ecmaVersion: 2018,
   },
-  extends: [
-    'standard',
-    'plugin:prettier/recommended'
-  ],
-  plugins: [
-    'prettier',
-    'jest'
-  ],
+  extends: ['standard', 'plugin:prettier/recommended'],
+  plugins: ['prettier', 'jest'],
   // add your custom rules here
-  rules: {}
+  rules: {},
 }
