@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
-    "dotenv": "^10.0.0"
+    "dotenv": "^16.0.1"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
