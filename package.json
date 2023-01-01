@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "axios": "^0.27.2",
+    "axios": "^1.2.2",
     "dotenv": "^10.0.0"
   },
   "devDependencies": {
